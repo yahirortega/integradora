@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <!--  Bootstrap  -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-
-
     <title>{% block title %}{% endblock %}</title>
 
     {% block customCSS %}
@@ -15,16 +13,6 @@
 
 </head>
 <body>
-
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-success">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}       
-    {% endwith %}
 
     <div class="b-example-divider"></div>
 
@@ -39,6 +27,9 @@
             <li><a href="{{ url_for('home.index') }}" class="nav-link px-2 link-secondary">Home</a></li>
             <li><a href="{{ url_for('home.loan') }}" class="nav-link px-2">Préstamos</a></li>
             <li><a href="{{ url_for('home.about') }}" class="nav-link px-2">¿Quiénes Somos?</a></li>
+            {% if user %}
+            <li><a href="{{ url_for('home.index') }}" class="nav-link px-2">Cerrar Sesión</a></li>
+            {% endif %}
         </ul>
 
         <div class="col-md-3 text-end">

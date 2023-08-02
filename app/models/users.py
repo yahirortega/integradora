@@ -1,4 +1,5 @@
 from .db import get_connection
+from werkzeug.security import generate_password_hash, check_password_hash
 
 mydb = get_connection()
 
@@ -16,8 +17,13 @@ class User:
                  curp,
                  tel_cel,
                  tel_casa,
-                 id_cliente = None):
-        self.id_cliente = id_cliente
+                 email,
+                 password,
+                 calle,
+                 num_ext,
+                 num_int,
+                 id_usuario = None):
+        self.id_usuario = id_usuario
         self.nombre = nombre
         self.ape_pat = ape_pat
         self.ape_mat = ape_mat
@@ -29,13 +35,113 @@ class User:
         self.curp = curp
         self.tel_cel = tel_cel
         self.tel_casa = tel_casa
+        self.email = email
+        self.password = password
+        self.calle = calle
+        self.num_ext = num_ext
+        self.num_int = num_int
 
     def save(self):
-        if self.id_cliente is None:
+        if self.id_usuario is None:
             with mydb.cursor() as cursor:
-                sql = "INSERT INTO clientes (nombre, ape_pat, ape_mat, id_genero, fecha_nacimiento, id_nivelEdu, id_ocupacion, ingresos_mensuales, curp, tel_cel, tel_casa) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-                val = (self.nombre, self.ape_pat, self.ape_mat, self.id_genero, self.fecha_nacimiento, self.id_nivelEdu, self.id_ocupacion, self.ingresos_mensuales, self.curp, self.tel_cel, self.tel_casa)
+                self.password = generate_password_hash(self.password)
+                sql = "INSERT INTO clientes (nombre, ape_pat, ape_mat, id_genero, fecha_nacimiento, id_nivelEdu, id_ocupacion, ingresos_mensuales, curp, tel_cel, tel_casa, email, password, calle, num_ext, num_int) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                val = (self.nombre, self.ape_pat, self.ape_mat, self.id_genero, self.fecha_nacimiento, self.id_nivelEdu, self.id_ocupacion, self.ingresos_mensuales, self.curp, self.tel_cel, self.tel_casa, self.email, self.password, self.calle, self.num_ext, self.num_int)
                 cursor.execute(sql, val)
                 mydb.commit()
-                self.id_cliente = cursor.lastrowid
-                return self.id_cliente
+                self.id_usuario = cursor.lastrowid
+                return self.id_usuario
+            
+    def delete(self):
+        with mydb.cursor() as cursor:
+            sql = f"DELETE FROM clientes WHERE id_usuario = { self.id_usuario }"
+            cursor.execute(sql)
+            mydb.commit()
+            return self.id_usuario
+        
+    @staticmethod
+    def __get__(id_usuario):
+        with mydb.cursor(dictionary=True) as cursor:
+            sql = f"SELECT * FROM clientes WHERE id_usuario = { id_usuario }"
+            cursor.execute(sql)
+
+            user = cursor.fetchone()
+
+            if user:
+                user = User(nombre=user["nombre"], 
+                            ape_pat=user["ape_pat"], 
+                            ape_mat=user["ape_mat"], 
+                            id_genero=user["id_genero"], 
+                            fecha_nacimiento=user["fecha_nacimiento"], 
+                            id_nivelEdu=user["id_nivelEdu"], 
+                            id_ocupacion=user["id_ocupacion"],
+                            ingresos_mensuales=user["ingresos_mensuales"],
+                            curp=user["curp"],
+                            tel_cel=user["tel_cel"],
+                            tel_casa=user["tel_casa"],
+                            email=user["email"],
+                            password=user["password"],
+                            calle=user["calle"],
+                            num_ext=user["num_ext"],
+                            num_int=user["num_int"],
+                            id_usuario=id_usuario)
+                return user
+            
+            return None
+        
+    @staticmethod
+    def check_email(email):
+        with mydb.cursor(dictionary=True) as cursor:
+            sql = f"SELECT * FROM clientes WHERE email = '{ email }'"
+            cursor.execute(sql)
+
+            user = cursor.fetchone()
+
+            if user:
+                return 'User exist'
+            else:
+                return None
+            
+    @staticmethod
+    def get_by_password(email, password):
+        with mydb.cursor(dictionary=True) as cursor:
+            sql = "SELECT id_usuario, email, password FROM clientes WHERE email = %s"
+            val = (email,)
+            cursor.execute(sql, val)
+            user = cursor.fetchone()
+            
+            if user != None:
+                if check_password_hash(user["password"], password):
+                    return User.__get__(user["id_usuario"])
+            return None
+        
+    @staticmethod
+    def get_all():
+        users = []
+        with mydb.cursor(dictionary=True) as cursor:
+            sql = f"SELECT * FROM clientes"
+            cursor.execute(sql)
+            result = cursor.fetchall()
+            for user in result:
+                users.append(
+                    User(nombre=user["nombre"], 
+                            ape_pat=user["ape_pat"], 
+                            ape_mat=user["ape_mat"], 
+                            id_genero=user["id_genero"], 
+                            fecha_nacimiento=user["fecha_nacimiento"], 
+                            id_nivelEdu=user["id_nivelEdu"], 
+                            id_ocupacion=user["id_ocupacion"],
+                            ingresos_mensuales=user["ingresos_mensuales"],
+                            curp=user["curp"],
+                            tel_cel=user["tel_cel"],
+                            tel_casa=user["tel_casa"],
+                            email=user["email"],
+                            password=user["password"],
+                            calle=user["calle"],
+                            num_ext=user["num_ext"],
+                            num_int=user["num_int"],
+                            id_usuario=user["id_usuario"])
+                )
+            return users
+        
+    

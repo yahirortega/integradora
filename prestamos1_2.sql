@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-08-2023 a las 12:10:38
+-- Tiempo de generación: 02-08-2023 a las 17:19:48
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -28,7 +28,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `clientes` (
-  `id_cliente` int(10) NOT NULL,
+  `id_usuario` int(10) NOT NULL,
   `nombre` varchar(25) NOT NULL,
   `ape_pat` varchar(25) NOT NULL,
   `ape_mat` varchar(25) NOT NULL,
@@ -39,17 +39,21 @@ CREATE TABLE `clientes` (
   `ingresos_mensuales` float DEFAULT NULL,
   `curp` varchar(18) NOT NULL,
   `tel_cel` varchar(10) NOT NULL,
-  `tel_casa` varchar(12) DEFAULT NULL
+  `tel_casa` varchar(12) DEFAULT NULL,
+  `email` varchar(254) NOT NULL,
+  `password` varchar(150) NOT NULL,
+  `calle` varchar(50) NOT NULL,
+  `num_ext` smallint(5) UNSIGNED DEFAULT NULL,
+  `num_int` smallint(5) UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `clientes`
 --
 
-INSERT INTO `clientes` (`id_cliente`, `nombre`, `ape_pat`, `ape_mat`, `id_genero`, `fecha_nacimiento`, `id_nivelEdu`, `id_ocupacion`, `ingresos_mensuales`, `curp`, `tel_cel`, `tel_casa`) VALUES
-(1, 'Angelica', 'Perez', 'Bonilla', 1, '2023-07-31', 3, 1, 2000, 'PERA030717HTLRDNA4', '2471014138', '2453511111'),
-(2, 'Angel', 'Perez', 'Rodriguez', 1, '2023-07-18', 3, 2, 2000, 'PERA030717HTLRDNA4', '2471014138', '1111111111'),
-(3, 'Angel', 'Hernández', 'Lima', 2, '2013-02-05', 3, 1, 1, 'PERA030717HTLRDN03', '2471014137', '1111111111');
+INSERT INTO `clientes` (`id_usuario`, `nombre`, `ape_pat`, `ape_mat`, `id_genero`, `fecha_nacimiento`, `id_nivelEdu`, `id_ocupacion`, `ingresos_mensuales`, `curp`, `tel_cel`, `tel_casa`, `email`, `password`, `calle`, `num_ext`, `num_int`) VALUES
+(1, 'Angel', 'Perez', 'Rodriguez', 1, '2023-08-02', 1, 1, 2000, 'PERA030717HTLRDNA4', '2471014138', '2453511112', 'ared230000@gmail.com', 'pbkdf2:sha256:600000$XOPz67ueeRwDZGAT$33672a4634dcc47bfc2061bb6d00c3055fc6cbea347f8b0ea375b4f11c675f03', 'Andador Los Reyes', 60, 1),
+(2, 'Diana', 'Rodriguez', 'Rodriguez', 2, '2001-08-12', 4, 1, 7000, 'PERA030717HTLRDNA4', '2411342422', '2453511111', 'ared17@outlook.com', 'pbkdf2:sha256:600000$NrNEpHTQodc8cFMr$a15c1e3c917fc9a19123afd6275d21c522f1bab6fd7fee91963d733c6c0243f7', 'Andador Los Reyes', 60, 2);
 
 -- --------------------------------------------------------
 
@@ -112,19 +116,6 @@ INSERT INTO `ocupacion` (`id_ocupacion`, `ocupacion`) VALUES
 (1, 'Empleado del sector privado'),
 (2, 'Empleado del sector público');
 
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `users`
---
-
-CREATE TABLE `users` (
-  `id_usuario` int(11) NOT NULL,
-  `email` varchar(40) NOT NULL,
-  `password` varchar(40) NOT NULL,
-  `id_cliente` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 --
 -- Índices para tablas volcadas
 --
@@ -133,7 +124,7 @@ CREATE TABLE `users` (
 -- Indices de la tabla `clientes`
 --
 ALTER TABLE `clientes`
-  ADD PRIMARY KEY (`id_cliente`),
+  ADD PRIMARY KEY (`id_usuario`),
   ADD KEY `fk_ocupacion` (`id_ocupacion`),
   ADD KEY `fk_nivelEducativo` (`id_nivelEdu`),
   ADD KEY `fk_genero` (`id_genero`);
@@ -157,13 +148,6 @@ ALTER TABLE `ocupacion`
   ADD PRIMARY KEY (`id_ocupacion`);
 
 --
--- Indices de la tabla `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id_usuario`),
-  ADD KEY `fk_usuario_cliente` (`id_cliente`);
-
---
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
@@ -171,7 +155,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `id_cliente` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_usuario` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `genero`
@@ -192,12 +176,6 @@ ALTER TABLE `ocupacion`
   MODIFY `id_ocupacion` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT de la tabla `users`
---
-ALTER TABLE `users`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- Restricciones para tablas volcadas
 --
 
@@ -208,12 +186,6 @@ ALTER TABLE `clientes`
   ADD CONSTRAINT `fk_genero` FOREIGN KEY (`id_genero`) REFERENCES `genero` (`id_genero`),
   ADD CONSTRAINT `fk_nivelEducativo` FOREIGN KEY (`id_nivelEdu`) REFERENCES `nivel_educativo` (`id_nivelEdu`),
   ADD CONSTRAINT `fk_ocupacion` FOREIGN KEY (`id_ocupacion`) REFERENCES `ocupacion` (`id_ocupacion`);
-
---
--- Filtros para la tabla `users`
---
-ALTER TABLE `users`
-  ADD CONSTRAINT `fk_usuario_cliente` FOREIGN KEY (`id_cliente`) REFERENCES `clientes` (`id_cliente`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
