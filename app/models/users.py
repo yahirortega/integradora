@@ -19,9 +19,6 @@ class User:
                  tel_casa,
                  email,
                  password,
-                 calle,
-                 num_ext,
-                 num_int,
                  id_usuario = None):
         self.id_usuario = id_usuario
         self.nombre = nombre
@@ -37,16 +34,13 @@ class User:
         self.tel_casa = tel_casa
         self.email = email
         self.password = password
-        self.calle = calle
-        self.num_ext = num_ext
-        self.num_int = num_int
 
     def save(self):
         if self.id_usuario is None:
             with mydb.cursor() as cursor:
                 self.password = generate_password_hash(self.password)
-                sql = "INSERT INTO clientes (nombre, ape_pat, ape_mat, id_genero, fecha_nacimiento, id_nivelEdu, id_ocupacion, ingresos_mensuales, curp, tel_cel, tel_casa, email, password, calle, num_ext, num_int) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-                val = (self.nombre, self.ape_pat, self.ape_mat, self.id_genero, self.fecha_nacimiento, self.id_nivelEdu, self.id_ocupacion, self.ingresos_mensuales, self.curp, self.tel_cel, self.tel_casa, self.email, self.password, self.calle, self.num_ext, self.num_int)
+                sql = "INSERT INTO clientes (nombre, ape_pat, ape_mat, id_genero, fecha_nacimiento, id_nivelEdu, id_ocupacion, ingresos_mensuales, curp, tel_cel, tel_casa, email, password) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                val = (self.nombre, self.ape_pat, self.ape_mat, self.id_genero, self.fecha_nacimiento, self.id_nivelEdu, self.id_ocupacion, self.ingresos_mensuales, self.curp, self.tel_cel, self.tel_casa, self.email, self.password)
                 cursor.execute(sql, val)
                 mydb.commit()
                 self.id_usuario = cursor.lastrowid
@@ -81,9 +75,6 @@ class User:
                             tel_casa=user["tel_casa"],
                             email=user["email"],
                             password=user["password"],
-                            calle=user["calle"],
-                            num_ext=user["num_ext"],
-                            num_int=user["num_int"],
                             id_usuario=id_usuario)
                 return user
             
@@ -137,11 +128,36 @@ class User:
                             tel_casa=user["tel_casa"],
                             email=user["email"],
                             password=user["password"],
-                            calle=user["calle"],
-                            num_ext=user["num_ext"],
-                            num_int=user["num_int"],
                             id_usuario=user["id_usuario"])
                 )
             return users
+        
+    @staticmethod
+    def get_genero():
+        with mydb.cursor() as cursor:
+            sql = f"SELECT * FROM genero"
+            cursor.execute(sql)
+            result = cursor.fetchall()
+
+            return result
+
+    @staticmethod
+    def get_nivelEdu():
+        with mydb.cursor() as cursor:
+            sql = f"SELECT * FROM nivel_educativo"
+            cursor.execute(sql)
+            result = cursor.fetchall()
+
+            return result
+        
+    @staticmethod
+    def get_ocupacion():
+        with mydb.cursor() as cursor:
+            sql = f"SELECT * FROM ocupacion"
+            cursor.execute(sql)
+            result = cursor.fetchall()
+
+            return result
+
         
     

@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, DateField, TelField, PasswordField, EmailField, SelectField, ValidationError, FloatField, IntegerField
+from wtforms import StringField, SubmitField, DateField, TelField, PasswordField, EmailField, SelectField, ValidationError, FloatField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, NumberRange
 
 from models.users import User
@@ -8,10 +8,13 @@ class RegisterForm(FlaskForm):
     nombre = StringField("Nombre: ", validators=[DataRequired(), Length(min=4, max=25)])
     ape_pat = StringField("Apellido Paterno: ", validators=[DataRequired(), Length(min=4, max=25)])      
     ape_mat = StringField("Apellido Materno: ", validators=[DataRequired(), Length(min=4, max=25)])
-    id_genero = StringField("Genero: ", validators=[DataRequired()])
+    genero = User.get_genero()
+    id_genero = SelectField("Genero: ", choices=genero, coerce=int, validate_choice=False, validators=[DataRequired()])
     fecha_nacimiento = DateField("Fecha de Nacimiento: ", validators=[DataRequired()])
-    id_nivelEdu = StringField("Educación: ", validators=[DataRequired()])
-    id_ocupacion = StringField("Ocupacion: ", validators=[DataRequired()])
+    nivelEdu = User.get_nivelEdu()
+    id_nivelEdu = SelectField("Educación: ", choices=nivelEdu, coerce=int, validate_choice=False, validators=[DataRequired()])
+    ocupacion = User.get_ocupacion()
+    id_ocupacion = SelectField("Ocupacion: ", choices=ocupacion, coerce=int, validate_choice=False, validators=[DataRequired()])
     ingresos_mensuales = FloatField("Ingresos Mensuales: ", validators={NumberRange(min=0.0, max=None)})
     curp = StringField("Curp: ", validators=[DataRequired(), Length(min=18, max=18)])
     tel_cel = TelField("Tel Cel: ", validators=[DataRequired(), Length(min=10, max=10)])
@@ -22,10 +25,7 @@ class RegisterForm(FlaskForm):
                                                     EqualTo('password_confirm', 
                                                             message='Las contraseñas deben coincidir')])
     password_confirm = PasswordField('Password Confirm', validators=[DataRequired()])
-    calle = StringField("Calle: ", validators=[DataRequired(), Length(min=4, max=50)])
-    num_ext = IntegerField("Número Exterior: ", validators=[DataRequired(), NumberRange(min=0, max=None)])
-    num_int = IntegerField("Número Interior: ", validators=[DataRequired(), NumberRange(min=0, max=None)])
-    submit = SubmitField("Registrar")
+    submit = SubmitField("Continuar")
 
     ######## Validar Correo Unico #########
     def validate_email(self, field):

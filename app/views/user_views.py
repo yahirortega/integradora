@@ -1,12 +1,14 @@
 from flask import Blueprint, render_template, flash, redirect, url_for
 
 from models.users import User
+from models.address import Address
 
 from forms.user_forms import RegisterForm, LoginForm
+from forms.address_forms import AddressForm
 
 user_views = Blueprint('user',__name__)
 
-@user_views.route('/registro/', methods = ['GET', 'POST'])
+@user_views.route('/users/registro/', methods = ['GET', 'POST'])
 def register():
     form = RegisterForm()
 
@@ -24,20 +26,16 @@ def register():
         tel_casa = form.tel_casa.data
         email = form.email.data
         password = form.password.data
-        calle = form.calle.data
-        num_ext = form.num_ext.data
-        num_int = form.num_int.data
 
-        user = User(nombre, ape_pat, ape_mat, id_genero, fecha_nacimiento, id_nivelEdu, id_ocupacion, ingresos_mensuales, curp, tel_cel, tel_casa, email, password, calle, num_ext, num_int)
+        user = User(nombre, ape_pat, ape_mat, id_genero, fecha_nacimiento, id_nivelEdu, id_ocupacion, ingresos_mensuales, curp, tel_cel, tel_casa, email, password)
         user.save()
-        flash ('Registro Exitoso')
 
-        return redirect(url_for('home.loan'))
+        return redirect(url_for('user.address'))
     
     return render_template('auth/register.html', form = form)
 
 
-@user_views.route('/login/', methods = ['GET', 'POST'])
+@user_views.route('/users/login/', methods = ['GET', 'POST'])
 def login():
     form = LoginForm()
         
@@ -49,7 +47,29 @@ def login():
             flash('Verifica tus Datos')
         else:
             return render_template('home/loan.html', user=user)
+        
     return render_template('auth/login.html', form=form)
 
+@user_views.route('/users/address/', methods = ['GET', 'POST'])
+def address():
+    form = AddressForm()
+
+    if form.validate_on_submit():
+        id_estado = form.id_estado.data
+        municipio = form.municipio.data
+        cp = form.cp.data
+        tipo_asen = form.tipo_asen.data
+        asentamiento = form.asentamiento.data
+        calle = form.calle.data
+        num_ext = form.num_ext.data
+        num_int = form.num_int.data
+
+        user = Address(id_estado, municipio, cp, tipo_asen, asentamiento, calle, num_ext, num_int)
+        user.save()
+        flash ('Registro Exitoso')
+
+        return redirect(url_for('user.login'))
+
+    return render_template('auth/address.html', form=form)
 
     
