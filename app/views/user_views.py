@@ -63,8 +63,9 @@ def address():
         calle = form.calle.data
         num_ext = form.num_ext.data
         num_int = form.num_int.data
+        id_cliente = form.id_cliente.data
 
-        user = Address(id_estado, municipio, cp, tipo_asen, asentamiento, calle, num_ext, num_int)
+        user = Address(id_estado, municipio, cp, tipo_asen, asentamiento, calle, num_ext, num_int, id_cliente)
         user.save()
         flash ('Registro Exitoso')
 
