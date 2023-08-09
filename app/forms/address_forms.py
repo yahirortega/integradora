@@ -14,8 +14,6 @@ class AddressForm(FlaskForm):
     calle = StringField("Calle: ", validators=[DataRequired(), Length(min=4, max=50)])
     num_ext = IntegerField("Número Exterior: ", validators=[DataRequired(), NumberRange(min=0.0, max=None)])
     num_int = IntegerField("Número Interior: ", validators=[DataRequired(), NumberRange(min=0.0, max=None)])  
-    id_cliente = Address.get_cliente
-    id_cliente = IntegerField("Cliente: ", validators=[DataRequired()])
     submit = SubmitField("Registrar")
   
    

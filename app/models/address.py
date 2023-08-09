@@ -4,7 +4,7 @@ mydb = get_connection()
 
 class Address:
 
-    def __init__(self, id_estado, municipio, cp, tipo_asen, asentamiento, calle, num_ext, num_int, id_cliente, id_domicilio = None):
+    def __init__(self, id_estado, municipio, cp, tipo_asen, asentamiento, calle, num_ext, num_int, id_cliente=1, id_domicilio = None):
         self.id_domicilio = id_domicilio
         self.id_estado = id_estado
         self.municipio = municipio
@@ -30,15 +30,6 @@ class Address:
     def get_estado():
         with mydb.cursor() as cursor:
             sql = f"SELECT * FROM estados"
-            cursor.execute(sql)
-            result = cursor.fetchall()
-
-            return result
-    
-    @staticmethod
-    def get_cliente():
-        with mydb.cursor() as cursor:
-            sql = f"SELECT * FROM clientes"
             cursor.execute(sql)
             result = cursor.fetchall()
 

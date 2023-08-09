@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, flash, redirect, url_for
+from flask import Blueprint, render_template, flash, redirect, url_for, session
 
 from models.users import User
 from models.address import Address
@@ -29,8 +29,9 @@ def register():
 
         user = User(nombre, ape_pat, ape_mat, id_genero, fecha_nacimiento, id_nivelEdu, id_ocupacion, ingresos_mensuales, curp, tel_cel, tel_casa, email, password)
         user.save()
+        flash ('Registro Exitoso')
 
-        return redirect(url_for('user.address'))
+        return redirect(url_for('user.login'))
     
     return render_template('auth/register.html', form = form)
 
@@ -46,7 +47,8 @@ def login():
         if not user:
             flash('Verifica tus Datos')
         else:
-            return render_template('home/loan.html', user=user)
+            session['user'] = {'email': email, 'id': user.id_usuario}
+            return render_template('home/loan.html', user=user, form=form)
         
     return render_template('auth/login.html', form=form)
 
@@ -63,13 +65,11 @@ def address():
         calle = form.calle.data
         num_ext = form.num_ext.data
         num_int = form.num_int.data
-        id_cliente = form.id_cliente.data
+        id_cliente = session.get('user')['id']
 
         user = Address(id_estado, municipio, cp, tipo_asen, asentamiento, calle, num_ext, num_int, id_cliente)
         user.save()
-        flash ('Registro Exitoso')
-
-        return redirect(url_for('user.login'))
+        flash ('Domicilio Registrado')
 
     return render_template('auth/address.html', form=form)
 
