@@ -2,7 +2,31 @@
     
 {% block title %}Préstamos{% endblock %}
 
-{% block content %}    
-<h1>Préstamos</h1>
+{% block content %}  
+
+    <h1>Préstamo Estimado (MXN$)</h1>
+    <br>
+
+    <form action="" method="post">
+        {{ form.csrf_token }}
+
+        <div>
+            {{ form.monto.label }}
+            {{ form.monto() }}
+        </div>
+        <div>
+            {{ form.periodo.label }}
+            {{ form.periodo() }}
+        </div>
+        <div>
+            {{ form.modalidad_pago.label }}
+            {{ form.modalidad_pago() }}
+        </div>
+        <div>
+            {{ form.submit }}
+        </div>
+
+    </form>
+
 {% endblock %}
     

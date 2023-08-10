@@ -26,14 +26,15 @@
             <li><a href="{{ url_for('home.index') }}" class="nav-link link-secondary">Home</a></li>
             <li><a href="{{ url_for('home.loan') }}" class="nav-link">Préstamos</a></li>
             <li><a href="{{ url_for('home.about') }}" class="nav-link">¿Quiénes Somos?</a></li>
-            {% if user %}
-            <li><a href="{{ url_for('home.index') }}" class="nav-link">Cerrar Sesión</a></li>
-            {% endif %}
         </ul>
 
         <div class="col-md-3 text-end">
+            {% if user %}
+            <button type="button" class="btn btn-outline-primary me-2"><a href="{{ url_for('user.logout') }}" class="nav-link px-2"><nav class="botones">Cerrar Sesión</nav></a></button>
+            {% else %}
             <button type="button" class="btn btn-outline-primary me-2"><a href="{{ url_for('user.login') }}" class="nav-link px-2"><nav class="botones">Iniciar Sesión</nav></a></button>
             <button type="button" class="btn btn-primary"><a href="{{ url_for('user.register') }}" class="nav-link px-2">Registrarse</a></button>
+            {% endif %}
         </div>
         </header>
     </div>

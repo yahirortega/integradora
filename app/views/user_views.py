@@ -48,7 +48,7 @@ def login():
             flash('Verifica tus Datos')
         else:
             session['user'] = {'email': email, 'id': user.id_usuario}
-            return render_template('home/loan.html', user=user, form=form)
+            return render_template('home/index.html', user=user, form=form)
         
     return render_template('auth/login.html', form=form)
 
@@ -73,4 +73,7 @@ def address():
 
     return render_template('auth/address.html', form=form)
 
-    
+@user_views.route('/logout')  
+def logout():
+    session.clear()
+    return redirect(url_for('home.index')) 

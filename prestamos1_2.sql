@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 04-08-2023 a las 19:17:03
+-- Tiempo de generación: 10-08-2023 a las 17:21:14
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -51,7 +51,10 @@ CREATE TABLE `clientes` (
 INSERT INTO `clientes` (`id_usuario`, `nombre`, `ape_pat`, `ape_mat`, `id_genero`, `fecha_nacimiento`, `id_nivelEdu`, `id_ocupacion`, `ingresos_mensuales`, `curp`, `tel_cel`, `tel_casa`, `email`, `password`) VALUES
 (4, 'Angel', 'Perez', 'Rodriguez', 1, '2001-01-01', 1, 1, 2000, 'PERA030717HTLRDN03', '2471014138', '2453511112', 'ared2@gmail.com', 'pbkdf2:sha256:600000$D2WUy1AbjsJjmjio$3b2fe1e277797bd56cf55d6ca1f5f24309654fd7ed92f311fc8ff6804d25cac1'),
 (5, 'omar', 'Rodriguez', 'Lopez', 1, '2012-12-12', 1, 1, 6000, 'PERA030717HTLRDNA4', '2471014136', '2453511112', 'omar@gmail.com', 'pbkdf2:sha256:600000$w1OzpYDOSC52HjW4$a1cf26383edeac15cc612fef7793a20f4e1b51e27058b66a54c5910f1aa38d6c'),
-(6, 'omar', 'Perez', 'Lopez', 1, '2012-12-12', 1, 1, 6000, 'PERA030717HTLRDNA7', '2471014138', '2453511111', 'omar1@gmail.com', 'pbkdf2:sha256:600000$g2YGf0mWVtFjvJP1$306bd4107dd13f85a2b4674e8adcfa65b3a0ed4ae584262b55d9ad6ac2a32afa');
+(6, 'omar', 'Perez', 'Lopez', 1, '2012-12-12', 1, 1, 6000, 'PERA030717HTLRDNA7', '2471014138', '2453511111', 'omar1@gmail.com', 'pbkdf2:sha256:600000$g2YGf0mWVtFjvJP1$306bd4107dd13f85a2b4674e8adcfa65b3a0ed4ae584262b55d9ad6ac2a32afa'),
+(7, 'Alon', 'Perez', 'Rodriguez', 1, '2023-08-06', 4, 1, 200, 'PERA030717HTLRDNA4', '2471014131', '2453511112', 'ared88@gmail.com', 'pbkdf2:sha256:600000$l2lucyEzvogHlboL$90ce415830ea14b1438842e7dae998d0e1cbaceed7539416841d573276137c16'),
+(8, 'omar', 'Perez', 'Bonilla', 1, '2023-08-04', 1, 1, 2000, 'PERA000718HTLRDNA3', '2471014136', '2453511112', 'omarr@gmail.com', 'pbkdf2:sha256:600000$KsJfD2sWUuO8cius$aa155e8b24b8a2abf8f7b112d3cd7b178d0daf9422dbf3017e51f35c79eeff1a'),
+(9, 'Aldo', 'Hernández', 'Bonilla', 1, '2023-08-07', 1, 1, 2000, 'PERA000718HTLRDNA3', '2411342422', '2453511112', 'prueba@gmail.com', 'pbkdf2:sha256:600000$bL7Eqbme82jL5xFb$64331c0df24451aeb89fedb8572cd784de8bc21c5d1177661e4bf2bfaacaf488');
 
 -- --------------------------------------------------------
 
@@ -77,7 +80,10 @@ CREATE TABLE `domicilio` (
 --
 
 INSERT INTO `domicilio` (`id_domicilio`, `id_estado`, `municipio`, `cp`, `tipo_asen`, `asentamiento`, `calle`, `num_ext`, `num_int`, `id_cliente`) VALUES
-(1, 29, 'Huamantla', 90506, 'Unidad Habitacional', 'Ignacio Zaragoza', 'Andador Los Reyes', 60, 10, 4);
+(1, 29, 'Huamantla', 90506, 'Unidad Habitacional', 'Ignacio Zaragoza', 'Andador Los Reyes', 60, 10, 4),
+(2, 29, 'Apizaco', 90510, 'Fraccionamiento', 'La Colina', 'Río Coatzacoatcos ', 1313, 1, 7),
+(4, 29, 'Ixtenco', 90400, 'Pueblo', 'La Colina', '1313', 13, 12, 8),
+(5, 29, 'Apizaco', 90500, 'Fraccionamiento', 'La Colina', 'Andador Los Reyes', 12, 12, 9);
 
 -- --------------------------------------------------------
 
@@ -189,6 +195,29 @@ INSERT INTO `ocupacion` (`id_ocupacion`, `ocupacion`) VALUES
 (1, 'Empleado del sector privado'),
 (2, 'Empleado del sector público');
 
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `prestamos`
+--
+
+CREATE TABLE `prestamos` (
+  `id_prestamo` int(11) NOT NULL,
+  `id_cliente` int(10) NOT NULL,
+  `monto` float UNSIGNED NOT NULL,
+  `periodo` tinyint(3) UNSIGNED NOT NULL,
+  `modalidad_pago` tinyint(4) NOT NULL,
+  `fecha_in` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `prestamos`
+--
+
+INSERT INTO `prestamos` (`id_prestamo`, `id_cliente`, `monto`, `periodo`, `modalidad_pago`, `fecha_in`) VALUES
+(1, 9, 5000, 6, 1, '2023-08-10 13:28:59'),
+(2, 9, 5000, 6, 1, '2023-08-10 13:29:09');
+
 --
 -- Índices para tablas volcadas
 --
@@ -237,6 +266,13 @@ ALTER TABLE `ocupacion`
   ADD PRIMARY KEY (`id_ocupacion`);
 
 --
+-- Indices de la tabla `prestamos`
+--
+ALTER TABLE `prestamos`
+  ADD PRIMARY KEY (`id_prestamo`),
+  ADD KEY `fk_prestamo_cliente` (`id_cliente`);
+
+--
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
@@ -244,13 +280,13 @@ ALTER TABLE `ocupacion`
 -- AUTO_INCREMENT de la tabla `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `id_usuario` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_usuario` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `domicilio`
 --
 ALTER TABLE `domicilio`
-  MODIFY `id_domicilio` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_domicilio` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `genero`
@@ -271,6 +307,12 @@ ALTER TABLE `ocupacion`
   MODIFY `id_ocupacion` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT de la tabla `prestamos`
+--
+ALTER TABLE `prestamos`
+  MODIFY `id_prestamo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- Restricciones para tablas volcadas
 --
 
@@ -288,6 +330,12 @@ ALTER TABLE `clientes`
 ALTER TABLE `domicilio`
   ADD CONSTRAINT `fk_domicilio_clientes` FOREIGN KEY (`id_cliente`) REFERENCES `clientes` (`id_usuario`),
   ADD CONSTRAINT `fk_domicilio_estados` FOREIGN KEY (`id_estado`) REFERENCES `estados` (`id_estado`);
+
+--
+-- Filtros para la tabla `prestamos`
+--
+ALTER TABLE `prestamos`
+  ADD CONSTRAINT `fk_prestamo_cliente` FOREIGN KEY (`id_cliente`) REFERENCES `clientes` (`id_usuario`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
