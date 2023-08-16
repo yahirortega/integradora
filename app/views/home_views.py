@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session, flash
+from flask import Blueprint, render_template, session, redirect, url_for
 from datetime import datetime
 
 from models.loans import Loan
@@ -12,7 +12,7 @@ def index():
     user = session.get('user')
     return render_template('home/index.html')
 
-@home_views.route('/loan/', methods = ['GET', 'POST'])
+@home_views.route('/préstamo/', methods = ['GET', 'POST'])
 def loan():
     form = LoanForm()
 
@@ -22,13 +22,26 @@ def loan():
         periodo = form.periodo.data
         modalidad_pago = form.modalidad_pago.data
         fecha_in = datetime.utcnow()
-
+        
         user = Loan(id_cliente, monto, periodo, modalidad_pago, fecha_in)
         user.save()
-        flash ('Prestamo Registrado')
+
+        # Guardamos los datos en la sesión para usarlos en la función de redireccionamiento
+        session['loan_data'] = {
+            'monto': monto,
+            'periodo': periodo,
+            'modalidad_pago': modalidad_pago,
+            'fecha_in': fecha_in
+        }
+
+        return redirect(url_for('loan.pre_loan'))
 
     return render_template('home/loan.html', form = form)
 
 @home_views.route('/about/')
 def about():
     return render_template('home/about.html') 
+
+@home_views.route('/comentarios/')
+def comentarios():
+    return render_template('home/comentarios.html')

@@ -21,3 +21,31 @@ class Loan:
                 mydb.commit()
                 self.id_prestamo = cursor.lastrowid
                 return self.id_prestamo
+            
+    @staticmethod
+    def get_all():
+        datosP = []
+        with mydb.cursor(dictionary=True) as cursor:
+            sql = f"SELECT * FROM prestamos"
+            cursor.execute(sql)
+            result = cursor.fetchall()
+            for loan in result:
+                datosP.append(
+                    Loan(id_cliente=loan["id_cliente"], 
+                            monto=loan["monto"], 
+                            periodo=loan["periodo"], 
+                            modalidad_pago=loan["modalidad_pago"], 
+                            fecha_in=loan["fecha_in"], 
+                            id_prestamo=loan["id_prestamo"],)
+                )
+            return datosP
+    
+    @staticmethod
+    def get_modalidad():
+        with mydb.cursor() as cursor:
+            sql = f"SELECT * FROM modalidades_pago"
+            cursor.execute(sql)
+            result = cursor.fetchall()
+
+            return result
+    

@@ -116,7 +116,7 @@
 .conte {
   width: 70%; /* Ancho del contenido */
   float: left; /* Hace que el contenido flote a la izquierda */
-  padding-right: 20px; /* Espacio entre el contenido y la imagen */
+  padding-right: 10px; /* Espacio entre el contenido y la imagen */
 }
 
 

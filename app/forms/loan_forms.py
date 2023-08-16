@@ -1,11 +1,25 @@
 from flask_wtf import FlaskForm
-from wtforms import IntegerField, SubmitField, FloatField
-from wtforms.validators import DataRequired, Length, NumberRange
+from wtforms import SubmitField, FloatField, RadioField, SelectField
+from wtforms.validators import DataRequired, NumberRange
+
+from models.loans import Loan
 
 class LoanForm(FlaskForm):
-    monto = FloatField("Monto: ", validators=[DataRequired(), NumberRange(min=500, max=20000)])  
-    periodo = IntegerField("Periodo: ", validators=[DataRequired(), NumberRange(min=2, max=12)])
-    modalidad_pago = IntegerField("Modalidad Pago: ", validators=[DataRequired(), NumberRange(min=1, max=2)])
+    monto = FloatField("Monto:", validators=[
+            DataRequired(message="Campo Obligatrio"),
+            NumberRange(min=500, max=20000, message="Ingresa el monto entre $500 y $20,000")
+    ])  
+    periodo = RadioField("Periodo del Préstamo: ", 
+                        choices=['2','4','6','8','10','12'],
+                        validators=[DataRequired(message="Campo Obligatrio")
+    ])
+    modalidad_pago = Loan.get_modalidad
+    modalidad_pago = SelectField("Modalidad de Pago: ",
+                                 choices=modalidad_pago,
+                                 coerce=int,
+                                 validate_choice=False, 
+                                 validators=[DataRequired(message="Campo Obligatrio")
+    ])
     submit = SubmitField("Continuar")
   
    
