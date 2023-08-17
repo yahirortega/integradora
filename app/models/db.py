@@ -5,7 +5,7 @@ def get_connection():
         host='localhost',
         user='root',
         password='',
-        db='prestamos1_2'
+        db='prestamos1_3'
     )
     return mydb  
 

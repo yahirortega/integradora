@@ -1,9 +1,9 @@
-from flask import Blueprint, render_template, flash, redirect, url_for, session
+from flask import Blueprint, render_template, flash, redirect, url_for, session, abort
 
 from models.users import User
 from models.address import Address
 
-from forms.user_forms import RegisterForm, LoginForm
+from forms.user_forms import RegisterForm, LoginForm, ProfileForm
 from forms.address_forms import AddressForm
 
 user_views = Blueprint('user',__name__)
@@ -47,13 +47,24 @@ def login():
         if not user:
             flash('Verifica tus Datos')
         else:
-            session['user'] = {'email': email, 'id': user.id_usuario}
-            return render_template('home/index.html', user=user, form=form)
+            session['user'] = {'email': email, 'id': user.id_usuario, 'rol':user.rol}
+            if user.rol == 'cliente':
+                return render_template('home/index.html', user=user, form=form)
+            else:
+                return render_template('admin/main.html')
         
     return render_template('auth/login.html', form=form)
 
 @user_views.route('/users/address/', methods = ['GET', 'POST'])
 def address():
+    if 'user' not in session:     
+        # El usuario no ha iniciado sesión, redirecciona a la página de inicio de sesión
+        return redirect(url_for('user.login')) 
+    
+    if 'address_registered' in session:
+        # El usuario ya ha registrado su domicilio, redirecciona a la página de préstamo
+        return ('Domicilio Ya Registrado')
+    
     form = AddressForm()
 
     if form.validate_on_submit():
@@ -69,7 +80,10 @@ def address():
 
         user = Address(id_estado, municipio, cp, tipo_asen, asentamiento, calle, num_ext, num_int, id_cliente)
         user.save()
-        flash ('Domicilio Registrado')
+
+        session['address_registered'] = True  # Marcar el domicilio como registrado
+        return redirect(url_for('home.loan'))  # Redirigir de nuevo a la vista de préstamo
+        #flash ('Domicilio Registrado')
 
     return render_template('auth/address.html', form=form)
 
@@ -77,3 +91,33 @@ def address():
 def logout():
     session.clear()
     return redirect(url_for('home.index')) 
+
+@user_views.route('/users/profile/', methods=('GET', 'POST'))
+def profile():
+    form = ProfileForm()
+    id_usuario = session.get('id_usuario')
+    user = User.__get__(id_usuario)
+    if not user:
+        abort(404)
+    if form.validate_on_submit():
+        user.nombre = form.nombre.data
+        user.ape_pat = form.ape_pat.data
+        user.id_genero = form.id_genero.data
+        user.fecha_nacimiento = form.fecha_nacimiento.data
+        user.id_nivelEdu = form.id_nivelEdu.data
+        user.id_ocupacion = form.id_ocupacion.data
+        user.curp = form.curp.data
+        user.tel_cel = form.tel_cel.data
+        user.tel_casa = form.tel_casa.data
+        user.save()
+    form.nombre.data = user.nombre
+    form.ape_pat.data = user.ape_pat
+    form.ape_mat.data = user.ape_mat
+    form.id_genero.data = user.id_genero
+    form.fecha_nacimiento.data = user.fecha_nacimiento
+    form.id_nivelEdu.data = user.id_nivelEdu
+    form.id_ocupacion.data = user.id_ocupacion
+    form.curp.data = user.curp
+    form.tel_cel.data = user.tel_cel
+    form.tel_casa.data = user.tel_casa
+    return render_template('user/profile.html', form=form)
