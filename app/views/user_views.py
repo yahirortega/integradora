@@ -95,17 +95,18 @@ def logout():
 @user_views.route('/users/profile/', methods=('GET', 'POST'))
 def profile():
     form = ProfileForm()
-    id_usuario = session.get('id_usuario')
-    user = User.__get__(id_usuario)
-    if not user:
+    user = User.__get__(id_usuario=session.get('user')['id'])
+    if not user:    
         abort(404)
     if form.validate_on_submit():
         user.nombre = form.nombre.data
         user.ape_pat = form.ape_pat.data
+        user.ape_mat = form.ape_mat.data
         user.id_genero = form.id_genero.data
         user.fecha_nacimiento = form.fecha_nacimiento.data
         user.id_nivelEdu = form.id_nivelEdu.data
         user.id_ocupacion = form.id_ocupacion.data
+        user.ingresos_mensuales = form.ingresos_mensuales.data
         user.curp = form.curp.data
         user.tel_cel = form.tel_cel.data
         user.tel_casa = form.tel_casa.data
@@ -117,7 +118,18 @@ def profile():
     form.fecha_nacimiento.data = user.fecha_nacimiento
     form.id_nivelEdu.data = user.id_nivelEdu
     form.id_ocupacion.data = user.id_ocupacion
+    form.ingresos_mensuales.data = user.ingresos_mensuales
     form.curp.data = user.curp
     form.tel_cel.data = user.tel_cel
-    form.tel_casa.data = user.tel_casa
-    return render_template('user/profile.html', form=form)
+    form.tel_casa.data = user.tel_casa      
+    return render_template('auth/profile.html', form=form)
+
+@user_views.route('/users/')
+def mostrar_usuarios():
+    users = User.get_all()
+    return render_template('admin/clientes.html', users = users)
+
+
+
+    
+
