@@ -120,7 +120,7 @@ class User:
     @staticmethod
     def get_all():
         with mydb.cursor(dictionary=True) as cursor:
-            sql = f"SELECT * FROM vista_clientes"
+            sql = f"SELECT * FROM vista_clientess"
             cursor.execute(sql)
             result = cursor.fetchall()
             return result

@@ -51,7 +51,7 @@ def login():
             if user.rol == 'cliente':
                 return render_template('home/index.html', user=user, form=form)
             else:
-                return render_template('admin/main.html')
+                return redirect(url_for('user.admin'))
         
     return render_template('auth/login.html', form=form)
 
@@ -92,6 +92,13 @@ def logout():
     session.clear()
     return redirect(url_for('home.index')) 
 
+@user_views.route('/users/<int:id>/delete', methods=['POST'])  
+def delete(id):
+    user=User.__get__(id)
+    if user != None:
+        user.delete()
+    return redirect(url_for('user.mostrar_usuarios')) 
+
 @user_views.route('/users/profile/', methods=('GET', 'POST'))
 def profile():
     form = ProfileForm()
@@ -128,6 +135,10 @@ def profile():
 def mostrar_usuarios():
     users = User.get_all()
     return render_template('admin/clientes.html', users = users)
+
+@user_views.route('/admin/')
+def admin():
+    return render_template('admin/main.html')
 
 
 

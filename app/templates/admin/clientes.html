@@ -2,10 +2,12 @@
 <html>
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <!-- Option 1: Include in HTML -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
     <title>Lista de Usuarios</title>
 </head>
 <body>
-    <h1>Clientes</h1>
+    <h1 class="fw-normal text-center">Clientes</h1> 
             <br>
             <table class="table table-striped">
                 <thead>
@@ -15,13 +17,13 @@
                         <td><strong>Apellido Materno</strong></td>
                         <td><strong>Generó</strong></td>
                         <td><strong>Fecha de Nacimiento</strong></td>
-                        <td>Nivel Educativo</td>
-                        <td>Ocupación</td>
-                        <td>Ingresos Mensuales</td>
-                        <td>CURP</td>
-                        <td>Teléfono Celular</td>
-                        <td>Teléfono de Casa</td>
-                        <td>Correo</td>
+                        <td><strong>Nivel Educativo</strong></td>
+                        <td><strong>Ocupación</strong></td>
+                        <td><strong>Ingresos Mensuales</strong></td>
+                        <td><strong>CURP</strong></td>
+                        <td><strong>Teléfono Celular</strong></td>
+                        <td><strong>Teléfono de Casa</strong></td>
+                        <td><strong>Correo</strong></td>
                     </tr>
                 </thead>
                 <tbody>
@@ -39,9 +41,19 @@
                         <td>{{ user.tel_cel }}</td>
                         <td>{{ user.tel_casa }}</td>
                         <td>{{ user.email }}</td>
+                        <td>
+                            <form action="{{ url_for('user.delete', id=user.id) }}" method="post">
+                            <button class="btn btn-danger" type="submit" onclick="return confirm('¿Seguro?')">
+                                Eliminar
+                            </button>
+                            </form>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+
+            <a href="{{  url_for('user.admin') }}"><i class="bi bi-arrow-90deg-left"></i></a>
+
 </body>
 </html>
